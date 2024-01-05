@@ -130,7 +130,8 @@ class Agent():
             return random.sample(self.possible_actions,1)[0]
 
         """Do Best Acton"""
-        a_index = np.argmax(self.model.predict(state))
+        state = np.reshape(state,(1,12,11))
+        a_index = np.argmax(self.model.predict(state,verbose = 0))
         return self.possible_actions[a_index]
 
     def _index_valid(self,index):
@@ -163,8 +164,8 @@ class Agent():
                 next_done_flags.append(self.memory.done_flags[index+1])
 
         """Now we get the ouputs from our model, and the target model. We need this for our target in the error function"""
-        labels = self.model.predict(np.array(states))
-        next_state_values = self.model_target.predict(np.array(next_states))
+        labels = self.model.predict(np.array(states),verbose = 0)
+        next_state_values = self.model_target.predict(np.array(next_states),verbose=0)
         
         """Now we define our labels, or what the output should have been
            We want the output[action_taken] to be R_(t+1) + Qmax_(t+1) """
@@ -174,9 +175,11 @@ class Agent():
             labels[i][action] = next_rewards[i] + int((not next_done_flags[i])) * self.gamma * max(next_state_values[i])
 
         """Train our model using the states and outputs generated"""
+        # print('train')
         self.model.fit(np.array(states),labels,batch_size = 32, epochs = 1, verbose = 0)
 
         """Decrease epsilon and update how many times our agent has learned"""
+        
         if self.epsilon > self.epsilon_min:
             self.epsilon -= self.epsilon_decay
         self.learns += 1
