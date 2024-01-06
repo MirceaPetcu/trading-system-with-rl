@@ -31,6 +31,7 @@ class CustomTradingEnv(StocksEnv):
 
             if self._position == Positions.Long:
                 step_reward += price_diff
+        
 
         return step_reward
 
