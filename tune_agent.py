@@ -161,7 +161,7 @@ def objective(trial: optuna.Trial) -> float:
 
 if __name__ == "__main__":
     # Set pytorch num threads to 1 for faster training.
-    torch.set_num_threads(2)
+    torch.set_num_threads(1)
 
     sampler = TPESampler(n_startup_trials=N_STARTUP_TRIALS)
     # Do not prune before 1/3 of the max budget is used.
