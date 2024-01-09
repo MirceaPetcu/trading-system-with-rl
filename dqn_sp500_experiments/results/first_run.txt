@@ -1,0 +1,270 @@
+Episode 1/1000 - Score: 1039.6988769531272
+Episode 2/1000 - Score: 347.81478881835636
+
+Target model updated
+Episode 3/1000 - Score: -2441.3504455566435
+Episode 4/1000 - Score: -3.113635253905322
+
+Target model updated
+Episode 5/1000 - Score: -4822.20184326171
+Episode 6/1000 - Score: -2394.7576721191385
+
+Target model updated
+Episode 7/1000 - Score: -3694.885937499998
+Episode 8/1000 - Score: -4015.240576171876
+Episode 9/1000 - Score: 1206.529003906244
+
+Target model updated
+Episode 10/1000 - Score: -3500.4386840820275
+Episode 11/1000 - Score: 826.0832397460943
+
+Weights saved!
+
+Target model updated
+Episode 12/1000 - Score: -2433.291467285152
+Episode 13/1000 - Score: 167.2860778808622
+
+Target model updated
+Episode 14/1000 - Score: -1295.640625000001
+Episode 15/1000 - Score: 1537.3533020019554
+
+Target model updated
+Episode 16/1000 - Score: -1374.0062866210926
+Episode 17/1000 - Score: -1772.2518615722702
+Episode 18/1000 - Score: -1101.8581237792962
+
+Target model updated
+Episode 19/1000 - Score: -3895.033410644526
+Episode 20/1000 - Score: -708.0908691406241
+
+Target model updated
+Episode 21/1000 - Score: -1042.072259521486
+Episode 22/1000 - Score: -1233.2704956054652
+
+Weights saved!
+
+Target model updated
+Episode 23/1000 - Score: 1818.7780517578117
+Episode 24/1000 - Score: 2181.7533569335924
+
+Target model updated
+Episode 25/1000 - Score: 2400.027697753907
+Episode 26/1000 - Score: 2237.673760986329
+Episode 27/1000 - Score: 3535.5248535156234
+
+Target model updated
+Episode 28/1000 - Score: 2606.7949035644524
+Episode 29/1000 - Score: 2199.17515258789
+
+Target model updated
+Episode 30/1000 - Score: 2139.915722656251
+Episode 31/1000 - Score: 2333.6837829589863
+
+Target model updated
+Episode 32/1000 - Score: 2176.4802490234365
+Episode 33/1000 - Score: 1534.6554443359378
+Episode 34/1000 - Score: 2849.6049743652334
+
+Weights saved!
+
+Target model updated
+Episode 35/1000 - Score: 3923.8300964355444
+Episode 36/1000 - Score: 3927.0117797851562
+
+Target model updated
+Episode 37/1000 - Score: 3122.458770751952
+Episode 38/1000 - Score: 4375.19236450195
+
+Target model updated
+Episode 39/1000 - Score: 4639.94977416992
+Episode 40/1000 - Score: 5252.140753173826
+
+Target model updated
+Episode 41/1000 - Score: 4799.374700927731
+Episode 42/1000 - Score: 5718.579547119143
+Episode 43/1000 - Score: 5755.446240234374
+
+Target model updated
+Episode 44/1000 - Score: 6176.072363281247
+Episode 45/1000 - Score: 6234.784106445314
+
+Weights saved!
+
+Target model updated
+Episode 46/1000 - Score: 5950.786120605467
+Episode 47/1000 - Score: 4563.959460449217
+
+Target model updated
+Episode 48/1000 - Score: 3868.4143493652273
+Episode 49/1000 - Score: 2105.982006835934
+
+Target model updated
+Episode 50/1000 - Score: 4253.864697265627
+Episode 51/1000 - Score: 4339.4859802246065
+Episode 52/1000 - Score: 4728.592205810545
+
+Target model updated
+Episode 53/1000 - Score: 5456.123999023432
+Episode 54/1000 - Score: 4169.433728027342
+
+Target model updated
+Episode 55/1000 - Score: 4629.53501586914
+Episode 56/1000 - Score: 5038.573406982421
+
+Weights saved!
+
+Target model updated
+Episode 57/1000 - Score: 4655.978973388671
+Episode 58/1000 - Score: 4267.615002441402
+Episode 59/1000 - Score: 4900.2797302246045
+
+Target model updated
+Episode 60/1000 - Score: 5730.820977783197
+Episode 61/1000 - Score: 4633.011492919923
+
+Target model updated
+Episode 62/1000 - Score: 4101.802087402344
+Episode 63/1000 - Score: 4784.0185668945305
+
+Target model updated
+Episode 64/1000 - Score: 4786.340521240233
+Episode 65/1000 - Score: 4517.11201171875
+
+Target model updated
+Episode 66/1000 - Score: 4407.667657470703
+Episode 67/1000 - Score: 3793.5736206054653
+Episode 68/1000 - Score: 3337.792919921876
+
+Weights saved!
+
+Target model updated
+Episode 69/1000 - Score: 3999.024639892576
+Episode 70/1000 - Score: 3871.8357116699212
+
+Target model updated
+Episode 71/1000 - Score: 3940.0252197265645
+Episode 72/1000 - Score: 3076.136022949218
+
+Target model updated
+Episode 73/1000 - Score: 3853.1390136718746
+Episode 74/1000 - Score: 4407.048986816404
+
+Target model updated
+Episode 75/1000 - Score: 5356.842590332032
+Episode 76/1000 - Score: 3277.536645507812
+Episode 77/1000 - Score: 3356.871337890626
+
+Target model updated
+Episode 78/1000 - Score: 2625.5794982910165
+Episode 79/1000 - Score: 3346.138604736326
+
+Weights saved!
+
+Target model updated
+Episode 80/1000 - Score: 2960.4932434082034
+Episode 81/1000 - Score: 3875.3320678710916
+
+Target model updated
+Episode 82/1000 - Score: 3046.504180908203
+Episode 83/1000 - Score: 2920.357043457034
+Episode 84/1000 - Score: 2299.874096679687
+
+Target model updated
+Episode 85/1000 - Score: 2677.5432983398437
+Episode 86/1000 - Score: 4342.840771484372
+
+Target model updated
+Episode 87/1000 - Score: 4229.965179443358
+Episode 88/1000 - Score: 4332.3477661132765
+
+Target model updated
+Episode 89/1000 - Score: 4570.441406249997
+Episode 90/1000 - Score: 4054.4870788574194
+
+Weights saved!
+
+Target model updated
+Episode 91/1000 - Score: 4627.3890869140605
+Episode 92/1000 - Score: 4015.1055175781235
+Episode 93/1000 - Score: 5761.008300781252
+
+Target model updated
+Episode 94/1000 - Score: 5992.736859130856
+Episode 95/1000 - Score: 4645.949737548824
+
+Target model updated
+Episode 96/1000 - Score: 5592.200811767575
+Episode 97/1000 - Score: 5069.816198730467
+
+Target model updated
+Episode 98/1000 - Score: 5493.307342529297
+Episode 99/1000 - Score: 4558.864544677731
+
+Target model updated
+Episode 100/1000 - Score: 4937.4708984374965
+Episode 101/1000 - Score: 4400.308477783199
+Episode 102/1000 - Score: 5399.226885986328
+
+Weights saved!
+
+Target model updated
+Episode 103/1000 - Score: 4978.656787109375
+Episode 104/1000 - Score: 3502.279077148435
+
+Target model updated
+Episode 105/1000 - Score: 4708.537976074217
+Episode 106/1000 - Score: 5401.644580078123
+
+Target model updated
+Episode 107/1000 - Score: 5069.0241760253875
+Episode 108/1000 - Score: 4671.680926513671
+Episode 109/1000 - Score: 4293.472174072263
+
+Target model updated
+Episode 110/1000 - Score: 2958.046966552732
+Episode 111/1000 - Score: 4210.660626220699
+
+Target model updated
+Episode 112/1000 - Score: 4650.0082763671835
+Episode 113/1000 - Score: 3973.637677001952
+
+Weights saved!
+
+Target model updated
+Episode 114/1000 - Score: 5786.3000183105505
+Episode 115/1000 - Score: 5106.5456909179675
+
+Target model updated
+Episode 116/1000 - Score: 4847.170800781247
+Episode 117/1000 - Score: 5100.025598144535
+Episode 118/1000 - Score: 5205.97530517578
+
+Target model updated
+Episode 119/1000 - Score: 4050.1433715820317
+Episode 120/1000 - Score: 4685.473370361324
+
+Target model updated
+Episode 121/1000 - Score: 4064.2361938476542
+Episode 122/1000 - Score: 4403.58767700195
+
+Target model updated
+Episode 123/1000 - Score: 5105.8330749511715
+Episode 124/1000 - Score: 4105.147015380856
+
+Weights saved!
+
+Target model updated
+Episode 125/1000 - Score: 4560.345220947266
+Episode 126/1000 - Score: 4242.31710205078
+Episode 127/1000 - Score: 4833.225769042966
+
+Target model updated
+Episode 128/1000 - Score: 5473.254882812496
+Episode 129/1000 - Score: 4608.385333251954
+
+Target model updated
+Episode 130/1000 - Score: 4629.607482910151
+Episode 131/1000 - Score: 3729.724713134766
+
+Target model updated
+Episode 132/1000 - Score: 4073.942047119139
