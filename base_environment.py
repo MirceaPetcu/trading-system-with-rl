@@ -24,7 +24,7 @@ class BaseEnv(gym.Env):
 
     metadata = {'render_modes': ['human'], 'render_fps': 3}
 
-    def __init__(self, df, window_size,balance, render_mode=None):
+    def __init__(self, df, window_size, render_mode=None):
         assert df.ndim == 2
         assert render_mode is None or render_mode in self.metadata['render_modes']
 
@@ -34,8 +34,6 @@ class BaseEnv(gym.Env):
         self.window_size = window_size
         self.prices, self.signal_features = self._process_data()
         self.shape = (window_size, self.signal_features.shape[1])
-        self.balance = balance
-        self.initial_balance =balance
         # spaces
         self.action_space = gym.spaces.Discrete(len(Actions))
         INF = 1e10
@@ -69,7 +67,6 @@ class BaseEnv(gym.Env):
         self._total_profit = 1.  # unit
         self._first_rendering = True
         self.history = {}
-        self.balance = self.initial_balance
 
         observation = self._get_observation()
         info = self._get_info()
@@ -90,7 +87,6 @@ class BaseEnv(gym.Env):
         self._total_reward += step_reward
 
         self._update_profit(action)
-        self._update_balance(action)
 
         trade = False
         if (
@@ -118,7 +114,6 @@ class BaseEnv(gym.Env):
             total_reward=self._total_reward,
             total_profit=self._total_profit,
             position=self._position,
-            balance = self.balance
         )
 
     def _get_observation(self):
@@ -213,5 +208,3 @@ class BaseEnv(gym.Env):
     def max_possible_profit(self):  # trade fees are ignored
         raise NotImplementedError
     
-    def _update_balance(self, action):
-        raise NotImplementedError
