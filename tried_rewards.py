@@ -1,7 +1,6 @@
 
 # testate pe un RecurentPPO MlpLstmPolicy cu 20000 timesteps cu acelasi seed si cu parametrii default
 
-# 0.8215623248506755 , cele mai mari profituri, kl-divergence :
 def reward1(self, action):
     step_reward = 0
     current_price = self.prices[self._current_tick]
@@ -38,7 +37,6 @@ def reward1(self, action):
     return step_reward
 
 
-# corelatie 0.04885196842947155, profituri ok,corelatie slaba, kl-divergence: 
 def reward2(self,action):
     step_reward = 0
     current_price = self.prices[self._current_tick]
@@ -95,7 +93,6 @@ def reward2(self,action):
             step_reward += 0
     
 
-# kl-divergence: 
 def reward3(self, action):
     step_reward = 0
     current_price = self.prices[self._current_tick]

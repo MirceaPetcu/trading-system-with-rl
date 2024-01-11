@@ -23,9 +23,10 @@ import torch.nn as nn
 from sb3_contrib import RecurrentPPO
 from environment import CustomTradingEnv
 from eda import get_data
+from stable_baselines3 import PPO
 
 N_TRIALS = 100
-N_STARTUP_TRIALS = 5
+N_STARTUP_TRIALS = 0
 N_EVALUATIONS = 2
 N_TIMESTEPS = int(2e4)
 EVAL_FREQ = int(N_TIMESTEPS / N_EVALUATIONS)
@@ -34,7 +35,7 @@ N_EVAL_EPISODES = 3
 
 def create_environment() -> gymnasium.Env:
     df = get_data()
-    env = CustomTradingEnv(df=df, frame_bound=(12, int(0.8*len(df))), window_size=12)
+    env = CustomTradingEnv(df=df, frame_bound=(30, int(0.8*len(df))), window_size=30)
     return env
 
 DEFAULT_HYPERPARAMS = {
@@ -42,17 +43,51 @@ DEFAULT_HYPERPARAMS = {
     "env": create_environment()
 }
 
+initial_hyperparameters = {
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "learning_rate": 3e-4,
+    # "ent_coef": 0.0,
+    "max_grad_norm": 0.5,
+    "vf_coef": 0.5,
+    "clip_range": 0.2,
+    "policy_kwargs": {
+        "lstm_hidden_size": 256,
+        "n_lstm_layers": 1,
+    }
+}
+
+# evaluate the agent
+from environment import CustomTradingEnv
+def evaluate_agent(model,episodes=10):
+    df = get_data()
+    test_env = CustomTradingEnv(df=df, frame_bound=(int(0.8*len(df)), len(df)), window_size=30)
+    mean_reward, mean_profit = 0, 0
+    for episode in range(episodes):
+        state = test_env.reset()[0]
+        while True:
+            action, x = model.predict(state)
+            state, reward, deprecated,done, info = test_env.step(action)
+            if done:
+                print(info)
+                break
+        mean_profit += info['total_profit']
+        mean_reward += info['total_reward']
+        
+    mean_reward /= episodes
+    mean_profit /= episodes
+    
+    test_env.close()
+    return mean_reward, mean_profit
 
 
 def sample_reccurent_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
-    """Sampler for ReccurentPPO hyperparameters."""
-    gamma = 1.0 - trial.suggest_float("gamma", 0.0001, 0.1, log=True)
+    """Sampler for RecurrentPPO hyperparameters."""
+    gamma = trial.suggest_float("gamma", 0.9, 0.9999, log=True)
     max_grad_norm = trial.suggest_float("max_grad_norm", 0.3, 5.0, log=True)
-    gae_lambda = 1.0 - trial.suggest_float("gae_lambda", 0.001, 0.2, log=True)
-    n_steps = 2 ** trial.suggest_int("n_steps", 3, 10)
+    gae_lambda = trial.suggest_float("gae_lambda", 0.8, 0.999, log=True)
     learning_rate = trial.suggest_float("learning_rate", 1e-5, 1, log=True)
-    ent_coef = trial.suggest_float("ent_coef", 0.00000000001, 0.1, log=True)
-    batch_size = trial.suggest_categorical("batch_size", [32, 64, 128, 256, 512,1024])
+    ent_coef = trial.suggest_float("ent_coef", 0.00000001, 0.1, log=True)
     clip_range = trial.suggest_float("clip_range", 0.1, 0.4, log=True)
     vf_coef = trial.suggest_float("vf_coef", 0.1, 0.9, log=True)
     lstm_hidden_size = trial.suggest_categorical("lstm_hidden_size", [32, 64, 128, 256, 512,1024])
@@ -61,26 +96,22 @@ def sample_reccurent_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     # Display true values.
     trial.set_user_attr("gamma_", gamma)
     trial.set_user_attr("gae_lambda_", gae_lambda)
-    trial.set_user_attr("n_steps", n_steps)
     trial.set_user_attr("learning_rate", learning_rate)
-    trial.set_user_attr("ent_coef", ent_coef)
+    # trial.set_user_attr("ent_coef", ent_coef)
     trial.set_user_attr("max_grad_norm", max_grad_norm)
     trial.set_user_attr("vf_coef", vf_coef)
-    trial.set_user_attr("batch_size", batch_size)
     trial.set_user_attr("clip_range", clip_range)
     
 
 
 
     return {
-        "n_steps": n_steps,
         "gamma": gamma,
         "gae_lambda": gae_lambda,
         "learning_rate": learning_rate,
         "ent_coef": ent_coef,
         "max_grad_norm": max_grad_norm,
         "vf_coef": vf_coef,
-        "batch_size": batch_size,
         "clip_range": clip_range,
         "policy_kwargs": {
             "lstm_hidden_size": lstm_hidden_size,
@@ -89,57 +120,20 @@ def sample_reccurent_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     }
 
 
-class TrialEvalCallback(EvalCallback):
-    """Callback used for evaluating and reporting a trial."""
-
-    def __init__(
-        self,
-        eval_env: gymnasium.Env,
-        trial: optuna.Trial,
-        n_eval_episodes: int = 5,
-        eval_freq: int = 10000,
-        deterministic: bool = True,
-        verbose: int = 0,
-    ):
-        super().__init__(
-            eval_env=eval_env,
-            n_eval_episodes=n_eval_episodes,
-            eval_freq=eval_freq,
-            deterministic=deterministic,
-            verbose=verbose,
-        )
-        self.trial = trial
-        self.eval_idx = 0
-        self.is_pruned = False
-
-    def _on_step(self) -> bool:
-        if self.eval_freq > 0 and self.n_calls % self.eval_freq == 0:
-            super()._on_step()
-            self.eval_idx += 1
-            self.trial.report(self.last_mean_reward, self.eval_idx)
-            # Prune trial if need.
-            if self.trial.should_prune():
-                self.is_pruned = True
-                return False
-        return True
-
-
 def objective(trial: optuna.Trial) -> float:
     kwargs = DEFAULT_HYPERPARAMS.copy()
     # Sample hyperparameters.
     kwargs.update(sample_reccurent_ppo_params(trial))
     # Create the RL model.
     model = RecurrentPPO(**kwargs)
-    # Create env used for evaluation.
-    eval_env = Monitor(create_environment())
-    # Create the callback that will periodically evaluate and report the performance.
-    eval_callback = TrialEvalCallback(
-        eval_env, trial, n_eval_episodes=N_EVAL_EPISODES, eval_freq=EVAL_FREQ, deterministic=True
-    )
+    
 
     nan_encountered = False
     try:
-        model.learn(N_TIMESTEPS, callback=eval_callback)
+        print('model training')
+        model.learn(N_TIMESTEPS)
+        # Evaluate for 10 episodes.
+        mean_reward, mean_profit = evaluate_agent(model,5)
     except AssertionError as e:
         # Sometimes, random hyperparams can generate NaN.
         print(e)
@@ -147,16 +141,14 @@ def objective(trial: optuna.Trial) -> float:
     finally:
         # Free memory.
         model.env.close()
-        eval_env.close()
+        # eval_env.close()
 
     # Tell the optimizer that the trial failed.
     if nan_encountered:
         return float("nan")
 
-    if eval_callback.is_pruned:
-        raise optuna.exceptions.TrialPruned()
 
-    return -eval_callback.last_mean_reward
+    return mean_profit
 
 
 if __name__ == "__main__":
@@ -164,12 +156,12 @@ if __name__ == "__main__":
     torch.set_num_threads(1)
 
     sampler = TPESampler(n_startup_trials=N_STARTUP_TRIALS)
-    # Do not prune before 1/3 of the max budget is used.
-    pruner = MedianPruner(n_startup_trials=N_STARTUP_TRIALS, n_warmup_steps=N_EVALUATIONS // 3)
 
-    study = optuna.create_study(sampler=sampler, pruner=pruner, direction="maximize")
+    study = optuna.create_study(sampler=sampler, direction="maximize", storage="sqlite:///db.sqlite3",  # Specify the storage URL here.
+        study_name="recurrent-ppo-study",load_if_exists=True)
+    study.enqueue_trial(initial_hyperparameters)
     try:
-        study.optimize(objective, n_trials=N_TRIALS, timeout=600)
+        study.optimize(objective, n_trials=N_TRIALS)
     except KeyboardInterrupt:
         pass
 
