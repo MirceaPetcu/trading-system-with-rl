@@ -32,7 +32,6 @@ class Utils():
 
     def initialize_new_game(self, env, agent,no_episode):
         """We don't want an agents past game influencing its new game, so we add in some dummy data to initialize"""
-        env.frame_bound = ((no_episode%70)*30+12,(no_episode%70)*30+30)
         env.reset()
         starting_frame = env.step(0)[0]
 
@@ -117,7 +116,7 @@ class Agent():
         self.model_target.eval()
 
     def _build_model(self):
-        model = Model(input_size=11, hidden_size=64, num_layers=2, output_size=len(self.possible_actions), dropout=0.5)
+        model = Model(input_size=10, hidden_size=64, num_layers=2, output_size=len(self.possible_actions), dropout=0.5)
         
         print('\nAgent Initialized\n')
         return model
@@ -128,7 +127,7 @@ class Agent():
             return random.sample(self.possible_actions,1)[0]
 
         """Do Best Acton"""
-        a_index = torch.argmax(self.model(torch.tensor(np.array(state).reshape(1,12,11),dtype=torch.float32)))
+        a_index = torch.argmax(self.model(torch.tensor(np.array(state).reshape(1,30,10),dtype=torch.float32)))
         
         return self.possible_actions[a_index]
 
@@ -147,7 +146,7 @@ class Agent():
         
         for epoch in range(1):
             for i, (x_batch,y_batch) in enumerate(dataloader):
-                self.model.zero_grad()
+                optimizer.zero_grad()
                 outputs = self.model(x_batch)
                 loss = criterion(outputs,y_batch)
                 loss.backward()
