@@ -1,0 +1,4 @@
+weights_episode_100.pt --- {'total_reward': 450.2600090000001, 'total_profit': 1.5551994104412572, 'position': <Positions.Long: 1>}
+weights_episode_200.pt --- {'total_reward': 463.15002400000003, 'total_profit': 1.5097242182978299, 'position': <Positions.Long: 1>} 
+weights_episode_300.pt --- {'total_reward': 447.740051, 'total_profit': 1.513118033277916, 'position': <Positions.Long: 1>}
+weights_episode_400.pt --- {'total_reward': 452.89001400000006, 'total_profit': 1.532749961633769, 'position': <Positions.Long: 1>}
