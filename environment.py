@@ -59,6 +59,7 @@ class CustomTradingEnv(BaseEnv):
         # invers e naspa si scade reward-ul
         # step_reward ca diferenta de preturi intre ziua curenta si ziua urmatoare, dar diferenta
         # este mai mica decat cea de la trade-uri (empiric da rezulate mai bune)
+        # reward shaping (cred)
         if not trade:
             try:
                 next_price = self.prices[self._current_tick + 1]
@@ -70,6 +71,8 @@ class CustomTradingEnv(BaseEnv):
                     step_reward += (current_price - next_price)
             except Exception as e:
                 step_reward += 0
+        
+        
         
             
         return step_reward

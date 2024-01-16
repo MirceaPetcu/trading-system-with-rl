@@ -25,7 +25,7 @@ from environment import CustomTradingEnv
 from eda import get_data
 from stable_baselines3 import PPO
 
-N_TRIALS = 100
+N_TRIALS = 1
 N_STARTUP_TRIALS = 0
 N_EVALUATIONS = 2
 N_TIMESTEPS = int(2e4)
@@ -40,22 +40,12 @@ def create_environment() -> gymnasium.Env:
 
 DEFAULT_HYPERPARAMS = {
     "policy": "MlpLstmPolicy",
-    "env": create_environment()
+    "env": create_environment(),
+    "policy_kwargs":{ "lstm_hidden_size": 256,
+                    "n_lstm_layers": 3,'enable_critic_lstm':True},
+   "seed":42,
 }
 
-initial_hyperparameters = {
-    "gamma": 0.99,
-    "gae_lambda": 0.95,
-    "learning_rate": 3e-4,
-    # "ent_coef": 0.0,
-    "max_grad_norm": 0.5,
-    "vf_coef": 0.5,
-    "clip_range": 0.2,
-    "policy_kwargs": {
-        "lstm_hidden_size": 256,
-        "n_lstm_layers": 1,
-    }
-}
 
 # evaluate the agent
 from environment import CustomTradingEnv
@@ -86,21 +76,15 @@ def sample_reccurent_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     gamma = trial.suggest_float("gamma", 0.9, 0.9999, log=True)
     max_grad_norm = trial.suggest_float("max_grad_norm", 0.3, 5.0, log=True)
     gae_lambda = trial.suggest_float("gae_lambda", 0.8, 0.999, log=True)
-    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1, log=True)
     ent_coef = trial.suggest_float("ent_coef", 0.00000001, 0.1, log=True)
-    clip_range = trial.suggest_float("clip_range", 0.1, 0.4, log=True)
     vf_coef = trial.suggest_float("vf_coef", 0.1, 0.9, log=True)
-    lstm_hidden_size = trial.suggest_categorical("lstm_hidden_size", [32, 64, 128, 256, 512,1024])
-    n_lstm_layers = trial.suggest_categorical("n_lstm_layers", [1, 2, 3, 4, 5, 6])
     
     # Display true values.
     trial.set_user_attr("gamma_", gamma)
     trial.set_user_attr("gae_lambda_", gae_lambda)
-    trial.set_user_attr("learning_rate", learning_rate)
-    # trial.set_user_attr("ent_coef", ent_coef)
+    trial.set_user_attr("ent_coef", ent_coef)
     trial.set_user_attr("max_grad_norm", max_grad_norm)
     trial.set_user_attr("vf_coef", vf_coef)
-    trial.set_user_attr("clip_range", clip_range)
     
 
 
@@ -108,15 +92,10 @@ def sample_reccurent_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     return {
         "gamma": gamma,
         "gae_lambda": gae_lambda,
-        "learning_rate": learning_rate,
         "ent_coef": ent_coef,
         "max_grad_norm": max_grad_norm,
         "vf_coef": vf_coef,
-        "clip_range": clip_range,
-        "policy_kwargs": {
-            "lstm_hidden_size": lstm_hidden_size,
-            "n_lstm_layers": n_lstm_layers,
-        }
+        
     }
 
 
@@ -133,7 +112,7 @@ def objective(trial: optuna.Trial) -> float:
         print('model training')
         model.learn(N_TIMESTEPS)
         # Evaluate for 10 episodes.
-        mean_reward, mean_profit = evaluate_agent(model,5)
+        mean_reward, mean_profit = evaluate_agent(model,10)
     except AssertionError as e:
         # Sometimes, random hyperparams can generate NaN.
         print(e)
@@ -158,8 +137,7 @@ if __name__ == "__main__":
     sampler = TPESampler(n_startup_trials=N_STARTUP_TRIALS)
 
     study = optuna.create_study(sampler=sampler, direction="maximize", storage="sqlite:///db.sqlite3",  # Specify the storage URL here.
-        study_name="recurrent-ppo-study",load_if_exists=True)
-    study.enqueue_trial(initial_hyperparameters)
+        study_name="recurrent-ppo-study-eth",load_if_exists=True)
     try:
         study.optimize(objective, n_trials=N_TRIALS)
     except KeyboardInterrupt:

@@ -12,20 +12,48 @@ from torch.nn import init
 import copy
 from torch.utils.data import TensorDataset, DataLoader
 
+# class Model(nn.Module):
+#     def __init__(self, input_size, hidden_size, num_layers, output_size, dropout):
+#         super(Model, self).__init__()
+#         self.num_layers, self.hidden_size = num_layers, hidden_size
+#         self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, dropout=dropout)
+#         self.linear = nn.Linear(hidden_size, output_size)
+#     def forward(self, x):
+#         batch_size = x.size(0)
+#         h0 = torch.zeros(self.num_layers, batch_size, self.hidden_size)
+#         c0 = torch.zeros(self.num_layers, batch_size, self.hidden_size)
+#         x, _ = self.lstm(x, (h0, c0))
+#         x = self.linear(x[:, -1, :])
+#         return x
+
 class Model(nn.Module):
-    def __init__(self, input_size, hidden_size, num_layers, output_size, dropout):
+    def __init__(self, input_size, hidden_size, num_layers, output_size, dropout, bidirectional = False):
         super(Model, self).__init__()
         self.num_layers, self.hidden_size = num_layers, hidden_size
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, dropout=dropout)
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, dropout=dropout, bidirectional = bidirectional)
+        self.dropout = nn.Dropout(p=dropout)
+        # Multiply hidden_size by 2 because of bidirectional
         self.linear = nn.Linear(hidden_size, output_size)
+        
+        # Xavier/Glorot initialization for linear layer
+        init.xavier_uniform_(self.linear.weight)
+
     def forward(self, x):
         batch_size = x.size(0)
-        h0 = torch.zeros(self.num_layers, batch_size, self.hidden_size)
-        c0 = torch.zeros(self.num_layers, batch_size, self.hidden_size)
+        # Add these lines to handle reshaping
+        if len(x.size()) == 2:
+            x = x.unsqueeze(1)
+        
+        # multiply self.num_layers by 2 if bidirectional
+        h0 = torch.zeros(self.num_layers, batch_size, self.hidden_size, device=x.device)
+        c0 = torch.zeros(self.num_layers, batch_size, self.hidden_size, device=x.device)
         x, _ = self.lstm(x, (h0, c0))
+        x = F.relu(x)  # Add ReLU activation
+        x = self.dropout(x)  # Apply dropout
         x = self.linear(x[:, -1, :])
         return x
-
+    
+    
 class Utils():
     def __init__(self) -> None:
         pass
@@ -117,7 +145,7 @@ class Agent():
 
     def _build_model(self):
         model = Model(input_size=10, hidden_size=64, num_layers=2, output_size=len(self.possible_actions), dropout=0.5)
-        
+        model.load_state_dict(torch.load('weights_episode_100.pt',map_location='cpu'))
         print('\nAgent Initialized\n')
         return model
 
